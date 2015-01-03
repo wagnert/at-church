@@ -177,8 +177,8 @@ class IndexAction extends AbstractAction
         // prepare the Github credentials
         $servicesCredentials = array(
             'github' => array(
-                'key'       => '442c9adeb30b9aee54d9',
-                'secret'    => 'ee843375d92a773f9afc471a28927ccbf253fade'
+                'key'       => 'enter-the-client-id-here',
+                'secret'    => 'enter-the-client-secret-here'
             )
         );
 
