@@ -3,7 +3,7 @@
 	"description" : "The example application for the ApplicationServer",
 	"version" : "0.1.0",
 	"require" : {
-        "lusitanian/oauth": "~0.3",
+		"lusitanian/oauth" : "~0.3",
 		"components/jquery" : "*",
 		"components/font-awesome" : "*",
 		"components/bootstrap" : "3.1.1",
