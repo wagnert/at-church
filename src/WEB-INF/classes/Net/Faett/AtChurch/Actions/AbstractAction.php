@@ -22,6 +22,8 @@
 namespace Net\Faett\AtChurch\Actions;
 
 use AppserverIo\Routlt\DispatchAction;
+use AppserverIo\Routlt\Util\ServletContextAware;
+use AppserverIo\Psr\Servlet\ServletContext;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
 
@@ -36,7 +38,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
  * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link       https://github.com/faett-net/at-church
  */
-abstract class AbstractAction extends DispatchAction
+abstract class AbstractAction extends DispatchAction implements ServletContextAware
 {
 
     /**
@@ -45,6 +47,13 @@ abstract class AbstractAction extends DispatchAction
      * @var string
      */
     const BASE_URL = '/';
+
+    /**
+     * The servlet context instance.
+     *
+     * @var \AppserverIo\Psr\Servlet\ServletContext
+     */
+    protected $servletContext;
 
     /**
      * The servlet request instance.
@@ -80,6 +89,28 @@ abstract class AbstractAction extends DispatchAction
 
         // call parent method
         parent::perform($servletRequest, $servletResponse);
+    }
+
+    /**
+     * Sets the actual servlet context instance.
+     *
+     * @param \AppserverIo\Psr\Servlet\ServletContext $servletContext The servlet context instance
+     *
+     * @return void
+     */
+    public function setServletContext(ServletContext $servletContext)
+    {
+        $this->servletContext = $servletContext;
+    }
+
+    /**
+     * Returns the servlet context instance.
+     *
+     * @return \AppserverIo\Psr\Servlet\ServletContext The servlet context instance
+     */
+    public function getServletContext()
+    {
+        return $this->servletContext;
     }
 
     /**

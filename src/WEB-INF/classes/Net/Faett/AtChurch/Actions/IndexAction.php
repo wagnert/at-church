@@ -47,6 +47,20 @@ class IndexAction extends AbstractAction
 {
 
     /**
+     * The key for the property containing the Github client ID.
+     *
+     * @var string
+     */
+    const GITHUB_CLIENT_ID = 'github.client.id';
+
+    /**
+     * The key for the property containing the Github client secret.
+     *
+     * @var string
+     */
+    const GITHUB_CLIENT_SECRET = 'github.client.secret';
+
+    /**
      * Default action to invoke if no action parameter has been found in the request.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
@@ -80,7 +94,7 @@ class IndexAction extends AbstractAction
     }
 
     /**
-     * This is the action invokes the Github login.
+     * This is the action that invokes the Github login.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
@@ -158,7 +172,7 @@ class IndexAction extends AbstractAction
         return sprintf(
             '%s://%s%s/index/callback',
             $servletRequest->getServerVar(ServerVars::REQUEST_SCHEME),
-            $servletRequest->getServerVar(ServerVars::SERVER_NAME),
+            $servletRequest->getServerVar(ServerVars::HTTP_HOST),
             $servletRequest->getServerVar(ServerVars::SCRIPT_NAME)
         );
     }
@@ -174,14 +188,6 @@ class IndexAction extends AbstractAction
         // se need the actual request instance
         $servletRequest = $this->getServletRequest();
 
-        // prepare the Github credentials
-        $servicesCredentials = array(
-            'github' => array(
-                'key'       => 'enter-the-client-id-here',
-                'secret'    => 'enter-the-client-secret-here'
-            )
-        );
-
         // initialize the service factory
         $serviceFactory = new ServiceFactory();
 
@@ -190,9 +196,9 @@ class IndexAction extends AbstractAction
 
         // Setup the credentials for the requests
         $credentials = new Credentials(
-            $servicesCredentials['github']['key'],
-            $servicesCredentials['github']['secret'],
-            $callbackUrl = $this->getCallbackUrl()
+            $this->getServletContext()->getInitParameter(IndexAction::GITHUB_CLIENT_ID),
+            $this->getServletContext()->getInitParameter(IndexAction::GITHUB_CLIENT_SECRET),
+            $this->getCallbackUrl()
         );
 
         // instantiate the GitHub service using the credentials, http client and storage mechanism for the token

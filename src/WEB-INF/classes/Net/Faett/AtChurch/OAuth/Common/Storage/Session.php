@@ -152,7 +152,6 @@ class Session implements TokenStorageInterface
      */
     public function storeAuthorizationState($service, $state)
     {
-        $serializedToken = serialize($token);
         if (is_array($data = $this->session->getData($this->stateVariableName))) {
             $data[$service] = $state;
             $this->session->putData($this->stateVariableName, $data);

@@ -3,6 +3,7 @@
 /instance-src
 /src/vendor
 /src/components
+/src/WEB-INF/routlt.properties
 /.idea
 /.buildpath
 /.project
