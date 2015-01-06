@@ -21,16 +21,11 @@
 
 namespace Net\Faett\AtChurch\Actions;
 
+use GitWrapper\GitWrapper;
+use Net\Faett\AtChurch\Util\RequestKeys;
+use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Http\HttpProtocol;
-use OAuth\ServiceFactory;
-use OAuth\OAuth2\Service\GitHub;
-use OAuth\Common\Consumer\Credentials;
-use OAuth\Common\Http\Uri\UriFactory;
-use Net\Faett\AtChurch\Util\RequestKeys;
-use Net\Faett\AtChurch\OAuth\Common\Storage\Session;
 
 /**
  * Default action implementation.
@@ -62,8 +57,26 @@ class RepositoryAction extends AbstractAction
 
         try {
 
-            // log the POST content
-            $servletRequest->getContext()->getInitialContext()->getSystemLogger()->info($servletRequest->getBodyContent());
+            // initialize the GIT wrapper
+            $wrapper = new GitWrapper();
+
+            // load the content sent by the POST request
+            $content = json_decode($servletRequest->getBodyContent());
+
+            // if we've already cloned the repository
+            if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
+
+                // reference the working copy
+                $git = $wrapper->workingCopy($workingCopy);
+
+            } elseif ($gitUrl = $content->repository->git_url) { // check if we've a repository URL
+
+                // clone the repo into a temporary working directory
+                $git = $wrapper->clone($gitUrl, $workingCopy);
+
+            } else { // we don't have a working copy nor can we find a repository URL
+                throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
+            }
 
         }  catch (\Exception $e) { // if we've a problem, try to re-login
 
