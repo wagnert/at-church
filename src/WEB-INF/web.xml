@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="1.0">
+
+    <display-name>appserver.io example application</display-name>
+    <description>This is the example application for the appserver.io servlet engine.</description>
+
+    <session-config>
+        <session-name>at_church_login</session-name>
+        <session-file-prefix>at_church_session_</session-file-prefix>
+    </session-config>
+
+    <servlet>
+        <description>The routlt controller servlet implementation.</description>
+        <display-name>The routlt controller servlet</display-name>
+        <servlet-name>routlt</servlet-name>
+        <servlet-class>AppserverIo\Routlt\ControllerServlet</servlet-class>
+        <init-param>
+            <param-name>action.base.path</param-name>
+            <param-value>WEB-INF/classes</param-value>
+        </init-param>
+        <init-param>
+            <param-name>routlt.configuration.file</param-name>
+            <param-value>WEB-INF/routlt.properties</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>routlt</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>routlt</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
