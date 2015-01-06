@@ -29,6 +29,7 @@ use OAuth\ServiceFactory;
 use OAuth\OAuth2\Service\GitHub;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Http\Uri\UriFactory;
+use Net\Faett\AtChurch\Util\RequestKeys;
 use Net\Faett\AtChurch\OAuth\Common\Storage\Session;
 
 /**
@@ -108,8 +109,7 @@ class IndexAction extends AbstractAction
         try {
 
             // redirect the the Github authorization URL
-            $servletResponse->setStatusCode(301);
-            $servletResponse->addHeader(HttpProtocol::HEADER_LOCATION, $this->getGithubService()->getAuthorizationUri()->__toString());
+            $servletResponse->redirect($this->getGithubService()->getAuthorizationUri()->__toString());
 
         }  catch (\Exception $e) { // if we've a problem, try to re-login
 
@@ -138,12 +138,12 @@ class IndexAction extends AbstractAction
         try {
 
             // query if we've a Github callback code
-            if (($code = $servletRequest->getParameter('code')) == null) {
-                throw new \Exception('Missing "code" parameter in Github callback');
+            if ($servletRequest->hasParameter(RequestKeys::CODE) === false) {
+                throw new \Exception(sprintf('Missing "%s" parameter in Github callback', RequestKeys::CODE));
             }
 
             // if yes, add it to the session
-            $this->getGithubService()->requestAccessToken($code);
+            $this->getGithubService()->requestAccessToken($servletRequest->getParameter(RequestKeys::CODE));
             $this->indexAction($servletRequest, $servletResponse);
 
         }  catch (\Exception $e) { // if we've a problem, try to re-login
