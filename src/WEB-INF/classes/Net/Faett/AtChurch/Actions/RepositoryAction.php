@@ -61,7 +61,8 @@ class RepositoryAction extends AbstractAction
             $wrapper = new GitWrapper();
 
             // load the content sent by the POST request
-            $content = json_decode($servletRequest->getBodyContent());
+            // $content = json_decode($servletRequest->getBodyContent());
+            $content = json_decode(file_get_contents('/tmp/github_push_callback.json'));
 
             // if we've already cloned the repository
             if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
@@ -78,6 +79,25 @@ class RepositoryAction extends AbstractAction
                 throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
             }
 
+            // prepare the target directory
+            $webappDir = '/opt/appserver/webapps/' . $content->repository->full_name;
+
+            // create/clean up the target directory
+            if (is_dir($webappDir)) {
+                $this->cleanUpDir($webappDir);
+            } else {
+                mkdir($webappDir, 0755, true);
+            }
+
+            // initialize the markdown parser
+            $parsedown = new \Parsedown();
+
+            // parse the markdown files and create the HTML code
+            foreach (glob($workingCopy .'/*.md') as $sourceFilename) {
+                $targetFilename = $webappDir . '/' . strtolower(basename($sourceFilename, 'md')) . 'html';
+                file_put_contents($targetFilename, $parsedown->text(file_get_contents($sourceFilename)));
+            }
+
         }  catch (\Exception $e) { // if we've a problem, try to re-login
 
             // log the exception
@@ -86,6 +106,43 @@ class RepositoryAction extends AbstractAction
             // append the exception trace
             $servletResponse->appendBodyStream($e->__toString());
             $servletResponse->setStatusCode(500);
+        }
+    }
+
+    /**
+     * Deletes all files and subdirectories from the passed directory.
+     *
+     * @param string $dir             The directory to remove
+     * @param bool   $alsoRemoveFiles The flag for removing files also
+     *
+     * @return void
+     */
+    public function cleanUpDir($dir, $alsoRemoveFiles = true)
+    {
+
+        // first check if the directory exists, if not return immediately
+        if (is_dir($dir) === false) {
+            return;
+        }
+
+        // remove old archive from webapps folder recursively
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($dir),
+            \RecursiveIteratorIterator::CHILD_FIRST
+        );
+
+        foreach ($files as $file) {
+            // skip . and .. dirs
+            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
+                continue;
+            }
+            if ($file->isDir()) {
+                @rmdir($file->getRealPath());
+            } elseif ($file->isFile() && $alsoRemoveFiles) {
+                unlink($file->getRealPath());
+            } else {
+                // do nothing, because file should NOT be deleted obviously
+            }
         }
     }
 }
