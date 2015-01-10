@@ -21,7 +21,6 @@
 
 namespace Net\Faett\AtChurch\Actions;
 
-use GitWrapper\GitWrapper;
 use Net\Faett\AtChurch\Util\RequestKeys;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
@@ -43,6 +42,22 @@ class RepositoryAction extends AbstractAction
 {
 
     /**
+     * The queue session for messages that starts page generation on gh-pages branch.
+     *
+     * @var \AppserverIo\MessageQueueClient\QueueSession
+     * @Resource(name="pms/generatePage")
+     */
+    protected $generatePageSender;
+
+    /**
+     * The queue session for messages that starts generation of API documentation.
+     *
+     * @var \AppserverIo\MessageQueueClient\QueueSession
+     * @Resource(name="pms/generateApi")
+     */
+    protected $generateApiSender;
+
+    /**
      * This is a callback action invoked by Github after a event.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
@@ -55,94 +70,26 @@ class RepositoryAction extends AbstractAction
     public function callbackAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
     {
 
-        try {
+        // load the content sent by the POST request
+        // $content = json_decode($servletRequest->getBodyContent());
+        $content = json_decode($message = file_get_contents('/tmp/github_push_callback.json'));
 
-            // initialize the GIT wrapper
-            $wrapper = new GitWrapper();
+        switch ($content->ref) {
 
-            // load the content sent by the POST request
-            // $content = json_decode($servletRequest->getBodyContent());
-            $content = json_decode(file_get_contents('/tmp/github_push_callback.json'));
+            case 'refs/heads/master':
 
-            // if we've already cloned the repository
-            if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
+                $this->generateApiSender->send(new StringMessage($message));
+                break;
 
-                // reference the working copy
-                $git = $wrapper->workingCopy($workingCopy);
+            case 'refs/heads/gh-pages':
 
-            } elseif ($gitUrl = $content->repository->git_url) { // check if we've a repository URL
+                $this->generatePageSender->send(new StringMessage($message));
+                break;
 
-                // clone the repo into a temporary working directory
-                $git = $wrapper->clone($gitUrl, $workingCopy);
+            case default:
 
-            } else { // we don't have a working copy nor can we find a repository URL
-                throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
-            }
+                break;
 
-            // prepare the target directory
-            $webappDir = '/opt/appserver/webapps/' . $content->repository->full_name;
-
-            // create/clean up the target directory
-            if (is_dir($webappDir)) {
-                $this->cleanUpDir($webappDir);
-            } else {
-                mkdir($webappDir, 0755, true);
-            }
-
-            // initialize the markdown parser
-            $parsedown = new \Parsedown();
-
-            // parse the markdown files and create the HTML code
-            foreach (glob($workingCopy .'/*.md') as $sourceFilename) {
-                $targetFilename = $webappDir . '/' . strtolower(basename($sourceFilename, 'md')) . 'html';
-                file_put_contents($targetFilename, $parsedown->text(file_get_contents($sourceFilename)));
-            }
-
-        }  catch (\Exception $e) { // if we've a problem, try to re-login
-
-            // log the exception
-            $servletRequest->getContext()->getInitialContext()->getSystemLogger()->error($e->__toString());
-
-            // append the exception trace
-            $servletResponse->appendBodyStream($e->__toString());
-            $servletResponse->setStatusCode(500);
-        }
-    }
-
-    /**
-     * Deletes all files and subdirectories from the passed directory.
-     *
-     * @param string $dir             The directory to remove
-     * @param bool   $alsoRemoveFiles The flag for removing files also
-     *
-     * @return void
-     */
-    public function cleanUpDir($dir, $alsoRemoveFiles = true)
-    {
-
-        // first check if the directory exists, if not return immediately
-        if (is_dir($dir) === false) {
-            return;
-        }
-
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
-            }
         }
     }
 }
