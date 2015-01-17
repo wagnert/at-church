@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<context name="routlt" type="AppserverIo\Appserver\Application\Application" xmlns="http://www.appserver.io/appserver">
+
+    <managers>
+        <manager
+            name="ObjectManagerInterface"
+            type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager"
+            factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
+            <descriptors>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\ServletDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\SingletonSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatefulSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\StatelessSessionBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Appserver\DependencyInjectionContainer\Description\MessageDrivenBeanDescriptor</descriptor>
+                <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
+            </descriptors>
+        </manager>
+    </managers>
+
+</context>
