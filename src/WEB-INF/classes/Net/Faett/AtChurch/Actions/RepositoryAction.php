@@ -25,6 +25,7 @@ use Net\Faett\AtChurch\Util\RequestKeys;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
 
 /**
  * Default action implementation.
@@ -86,7 +87,7 @@ class RepositoryAction extends AbstractAction
                 $this->generatePageSender->send(new StringMessage($message));
                 break;
 
-            case default:
+            default:
 
                 break;
 
