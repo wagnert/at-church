@@ -8,7 +8,8 @@
 		"components/font-awesome" : "*",
 		"components/bootstrap" : "3.1.1",
 		"appserver-io/routlt" : "dev-annotations",
-		"cpliakas/git-wrapper" : "1.4.*"
+		"cpliakas/git-wrapper" : "1.4.*",
+		"erusev/parsedown" : "1.1.*"
 	},
 	"require-dev" : {
 		"phpunit/phpunit" : "3.7.*",
