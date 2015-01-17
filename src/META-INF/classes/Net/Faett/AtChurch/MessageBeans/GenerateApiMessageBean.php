@@ -23,6 +23,8 @@ namespace Net\Faett\AtChurch\MessageBeans;
 
 use AppserverIo\Psr\MessageQueueProtocol\Message;
 use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
+use phpDocumentor\Bootstrap;
+use phpDocumentor\Application;
 
 /**
  * Clones GIT repository and starts to generate the API documentation.
@@ -53,6 +55,25 @@ class GenerateApiMessageBean extends AbstractReceiver
 
         // log a message that the message has successfully been received
         $this->getApplication()->getInitialContext()->getSystemLogger()->info('Successfully received / finished message');
+
+        // prepare the vendor directory
+        $vendorDir = sprintf('%s/vendor', $this->getApplication()->getWebappPath());
+
+        /*
+        $_SERVER = array(
+            'n',
+            'report-full',
+            'extensions' => 'php',
+            'standard' => 'PSR2',
+            $this->getApplication()->getWebappPath()
+            // '--report-checkstyle=${php-target.dir}/reports/phpcs.xml',
+        );
+        */
+
+        // create a phpDocumentor application instance
+        $bootstrap = Bootstrap::createInstance();
+        $app = new Application(null, array('composer.vendor_path' => $vendorDir));
+        $app->run();
 
         // update the message monitor for this message
         $this->updateMonitor($message);
