@@ -61,14 +61,35 @@ class GenerateApiMessageBean extends AbstractReceiver
 
         /*
         $_SERVER = array(
-            'n',
-            'report-full',
-            'extensions' => 'php',
-            'standard' => 'PSR2',
-            $this->getApplication()->getWebappPath()
-            // '--report-checkstyle=${php-target.dir}/reports/phpcs.xml',
+            'argv' => array(
+                '/Users/wagnert/Documents/Workspace/appserver/master/at-church/src/vendor/bin/phpdoc',
+                '--title',
+                'faett-net/at-church',
+                '--target',
+                '/Users/wagnert/Documents/Workspace/appserver/master/at-church/target/vendor/faett-net/at-church/apidoc',
+                '--directory',
+                '/Users/wagnert/Documents/Workspace/appserver/master/at-church/src',
+                '--ignore',
+                'vendor',
+                '--sourcecode'
+            )
         );
         */
+
+        $_SERVER = array(
+            'argv' => array(
+                '/Users/wagnert/Documents/Workspace/appserver/master/at-church/src/vendor/bin/phpdoc',
+                '--title',
+                'faett-net/at-church',
+                '--target',
+                '/tmp',
+                '--directory',
+                '/Users/wagnert/Documents/Workspace/appserver/master/at-church/src',
+                '--ignore',
+                'vendor',
+                '--sourcecode'
+            )
+        );
 
         // create a phpDocumentor application instance
         $bootstrap = Bootstrap::createInstance();
