@@ -54,68 +54,70 @@ class GenerateApiMessageBean extends AbstractReceiver
     public function onMessage(Message $message, $sessionId)
     {
 
-        // log a message that the message has successfully been received
-        $this->getApplication()->getInitialContext()->getSystemLogger()->info('Successfully received / finished message');
+        try {
 
-        // initialize the GIT wrapper
-        $wrapper = new GitWrapper();
+            // log a message that the message has successfully been received
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info('Successfully received / finished message');
 
-        // load the content from the message
-        $content = json_decode($message->getMessage());
+            // initialize the GIT wrapper
+            $wrapper = new GitWrapper('/usr/bin/git');
 
-        // if we've already cloned the repository
-        if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
+            // load the content from the message
+            $content = json_decode($message->getMessage());
 
-            // reference the working copy
-            $git = $wrapper->workingCopy($workingCopy);
+            // if we've already cloned the repository
+            if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
 
-        } elseif ($gitUrl = $content->repository->git_url) { // check if we've a repository URL
+                // reference the working copy
+                $git = $wrapper->workingCopy($workingCopy);
 
-            // clone the repo into a temporary working directory
-            $git = $wrapper->clone($gitUrl, $workingCopy);
+            } elseif ($gitUrl = $content->repository->git_url) { // check if we've a repository URL
 
-        } else { // we don't have a working copy nor can we find a repository URL
-            throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
-        }
+                // clone the repo into a temporary working directory
+                $git = $wrapper->clone($gitUrl, $workingCopy);
 
-        // prepare the target directory
-        $webappDir = '/opt/appserver/webapps/' . $content->repository->full_name;
+            } else { // we don't have a working copy nor can we find a repository URL
+                throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
+            }
 
-        // create/clean up the target directory
-        if (is_dir($webappDir)) {
-            $this->cleanUpDir($webappDir);
-        } else {
-            mkdir($webappDir, 0755, true);
-        }
+            // prepare the target directory
+            $webappDir = '/opt/appserver/webapps/' . $content->repository->full_name;
 
-        // prepare the vendor directory
-        $vendorDir = sprintf('%s/vendor', $this->getApplication()->getWebappPath());
+            // create/clean up the target directory
+            if (is_dir($webappDir)) {
+                $this->cleanUpDir($webappDir);
+            } else {
+                mkdir($webappDir, 0755, true);
+            }
 
-        // prepare the $_SERVER variable
-        $_SERVER = array(
-            'argv' => array(
-                sprintf('%s/bin/phpdoc', $vendorDir),
-                '--title',
-                'faett-net/at-church',
-                '--target',
-                $webappDir,
-                '--directory',
-                $workingCopy,
-                '--ignore',
-                'vendor',
-                '--sourcecode'
-            )
-        );
+            // prepare the vendor directory
+            $vendorDir = sprintf('%s/vendor', $this->getApplication()->getWebappPath());
 
-        // create a phpDocumentor application instance
-        $bootstrap = Bootstrap::createInstance();
-        $app = new Application(null, array('composer.vendor_path' => $vendorDir));
-        $app->run();
+            // prepare the $_SERVER variable
+            $_SERVER = array(
+                'argv' => array(
+                    sprintf('%s/bin/phpdoc', $vendorDir),
+                    '--title',
+                    $content->repository->full_name,
+                    '--target',
+                    $webappDir,
+                    '--directory',
+                    $workingCopy,
+                    '--ignore',
+                    'vendor',
+                    '--sourcecode'
+                )
+            );
 
-        // update the message monitor for this message
-        $this->updateMonitor($message);
+            // create a phpDocumentor application instance
+            $bootstrap = Bootstrap::createInstance();
+            $app = new Application(null, array('composer.vendor_path' => $vendorDir));
+            $app->run();
 
-        }  catch (\Exception $e) { // if we've a problem, log an exception
+            // update the message monitor for this message
+            $this->updateMonitor($message);
+
+        } catch (\Exception $e) { // if we've a problem, log an exception
             $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
     }

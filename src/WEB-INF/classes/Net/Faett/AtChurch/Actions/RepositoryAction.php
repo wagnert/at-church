@@ -72,8 +72,8 @@ class RepositoryAction extends AbstractAction
     {
 
         // load the content sent by the POST request
-        // $content = json_decode($servletRequest->getBodyContent());
-        $content = json_decode($message = file_get_contents('/tmp/github_push_callback.json'));
+        $content = json_decode($message = $servletRequest->getBodyContent());
+        // $content = json_decode($message = file_get_contents('/tmp/github_push_callback.json'));
 
         switch ($content->ref) {
 
