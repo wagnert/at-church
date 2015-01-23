@@ -105,6 +105,8 @@ class GenerateApiMessageBean extends AbstractMessageListener
                     $workingCopy,
                     '--ignore',
                     'vendor',
+                    '--template',
+                    'responsive',
                     '--sourcecode'
                 )
             );
