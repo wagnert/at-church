@@ -105,13 +105,9 @@ class GenerateApiMessageBean extends AbstractMessageListener
                     $workingCopy,
                     '--ignore',
                     'vendor',
-                    '--sourcecode',
-                    '--template',
-                    'responsive'
+                    '--sourcecode'
                 )
             );
-
-            error_log(print_r($_SERVER, true));
 
             // create a phpDocumentor application instance
             $bootstrap = Bootstrap::createInstance();
