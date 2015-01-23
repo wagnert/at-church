@@ -22,8 +22,8 @@
 namespace Net\Faett\AtChurch\MessageBeans;
 
 use GitWrapper\GitWrapper;
-use AppserverIo\Psr\MessageQueueProtocol\Message;
-use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
+use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Messaging\AbstractMessageListener;
 
 /**
  * Clones GIT repository, checkout the gh-pages branch and starts to generate the page.
@@ -37,7 +37,7 @@ use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
  *
  * @MessageDriven
  */
-class GeneratePageMessageBean extends AbstractReceiver
+class GeneratePageMessageBean extends AbstractMessageListener
 {
 
     /**

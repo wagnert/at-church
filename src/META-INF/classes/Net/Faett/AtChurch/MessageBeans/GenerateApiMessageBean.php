@@ -24,8 +24,8 @@ namespace Net\Faett\AtChurch\MessageBeans;
 use GitWrapper\GitWrapper;
 use phpDocumentor\Bootstrap;
 use phpDocumentor\Application;
-use AppserverIo\Psr\MessageQueueProtocol\Message;
-use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
+use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Messaging\AbstractMessageListener;
 
 /**
  * Clones GIT repository and starts to generate the API documentation.
@@ -39,7 +39,7 @@ use AppserverIo\Appserver\MessageQueue\Receiver\AbstractReceiver;
  *
  * @MessageDriven
  */
-class GenerateApiMessageBean extends AbstractReceiver
+class GenerateApiMessageBean extends AbstractMessageListener
 {
 
     /**
@@ -105,9 +105,13 @@ class GenerateApiMessageBean extends AbstractReceiver
                     $workingCopy,
                     '--ignore',
                     'vendor',
-                    '--sourcecode'
+                    '--sourcecode',
+                    '--template',
+                    'responsive'
                 )
             );
+
+            error_log(print_r($_SERVER, true));
 
             // create a phpDocumentor application instance
             $bootstrap = Bootstrap::createInstance();

@@ -25,7 +25,7 @@ use Net\Faett\AtChurch\Util\RequestKeys;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Psr\MessageQueueProtocol\Messages\StringMessage;
+use AppserverIo\Messaging\StringMessage;
 
 /**
  * Default action implementation.
@@ -45,7 +45,7 @@ class RepositoryAction extends AbstractAction
     /**
      * The queue session for messages that starts page generation on gh-pages branch.
      *
-     * @var \AppserverIo\MessageQueueClient\QueueSession
+     * @var \AppserverIo\Messaging\QueueSession
      * @Resource(name="pms/generatePage")
      */
     protected $generatePageSender;
@@ -53,7 +53,7 @@ class RepositoryAction extends AbstractAction
     /**
      * The queue session for messages that starts generation of API documentation.
      *
-     * @var \AppserverIo\MessageQueueClient\QueueSession
+     * @var \AppserverIo\Messaging\QueueSession
      * @Resource(name="pms/generateApi")
      */
     protected $generateApiSender;
