@@ -64,7 +64,7 @@ class GenerateApiMessageBean extends AbstractRepositoryMessageBean
             $workingDir = $this->prepareWorkingDir($payload);
 
             // checkout the tag specified in the payload
-            $this->getGitWrapper()->checkout($workingDir, $this->getTag($payload));
+            $this->getGitWrapper()->workingCopy($workingDir)->checkout($this->getTag($payload));
 
             // prepare the $_SERVER variable
             $_SERVER = array(
