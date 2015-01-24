@@ -22,10 +22,10 @@
 namespace Net\Faett\AtChurch\Actions;
 
 use Net\Faett\AtChurch\Util\RequestKeys;
+use AppserverIo\Messaging\StringMessage;
 use AppserverIo\Server\Dictionaries\ServerVars;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Messaging\StringMessage;
 
 /**
  * Default action implementation.
@@ -61,6 +61,20 @@ class RepositoryAction extends AbstractAction
     /**
      * This is a callback action invoked by Github after a event.
      *
+     * We actually only support the two events.
+     *
+     * * z1 -> Github `create` event
+     *   When this event is fired, we checkout the tag referenced in the payload and start generating
+     *   the API documentation using the latest PHPDocumentor implementation. The result will be
+     *   stored in the webapps folder under the <repository-name>/<tag> directory.
+     *
+     * * z2 -> Github `push` event
+     *   This event results in a pull to the latest commit of the `gh-pages` branch and we start to
+     *   transform the Github markdown into a HTML page. The result will be stored in the webapps
+     *   folder under the <repository-name> directory.
+     *
+     * All other events will be ignored actually!
+     *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
      *
@@ -79,31 +93,24 @@ class RepositoryAction extends AbstractAction
             // send a message to generate the API documentation
             $this->generateApiSender->send(new StringMessage($message));
 
+            // append a success message and return
             $servletResponse->appendBodyStream('Successfully start to generate API documentation');
-
             return;
         }
 
-        // z2 -> pushed a commit to master branch
-        if (isset($content->ref_type) === false && $content->ref === 'refs/heads/master') {
-            // functionality not implemented yet
-            $servletResponse->appendBodyStream('Functionality not implemented yet');
-
-            return;
-        }
-
-        // z3 -> pushed a commit to gh-pages branch
+        // z2 -> pushed a commit to gh-pages branch
         if (isset($content->ref_type) === false && $content->ref === 'refs/heads/gh-pages') {
             // send a message to generate the HTML page
             $this->generatePageSender->send(new StringMessage($message));
 
+            // append an success message and return
             $servletResponse->appendBodyStream('Successfully start to generate HTML page');
-
             return;
         }
 
+        // we didn't support the fired event yet
         $servletResponse->setStatusCode(500);
-        $servletResponse->appendBodyStream('Can\'t load necessary data from payload');
+        $servletResponse->appendBodyStream('Event fired can\'t be handled by this callback');
     }
 
     /**
@@ -132,8 +139,6 @@ class RepositoryAction extends AbstractAction
 
         // prepare the name of the file containing the dummy data
         $dummyFilename = sprintf('%s/META-INF/data/github_%s_callback.json', $webappPath, $event);
-
-        error_log("now try to laod $dummyFilename");
 
         // load the dummy data and add it to the request body
         $servletRequest->setBodyStream(file_get_contents($dummyFilename));

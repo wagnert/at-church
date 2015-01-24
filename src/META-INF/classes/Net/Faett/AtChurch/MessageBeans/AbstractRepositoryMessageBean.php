@@ -119,7 +119,7 @@ abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
         // if we've already cloned the repository
         if (is_dir($workingDir)) {
             // reference the working copy and update it
-            $this->getGitWrapper()->workingCopy($workingDir)->pull();
+            $this->getGitWrapper()->workingCopy($workingDir)->pull('origin', $payload->master_branch);
 
         // check if we've a repository URL
         } elseif ($gitUrl = $payload->repository->git_url) {

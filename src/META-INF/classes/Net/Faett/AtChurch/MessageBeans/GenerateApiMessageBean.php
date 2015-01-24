@@ -118,7 +118,7 @@ class GenerateApiMessageBean extends AbstractRepositoryMessageBean
      */
     protected function prepareTargetDir(\stdClass $payload)
     {
-        $targetDirectory = sprintf('/opt/appserver/webapps/%s/%s', $this->getFullName($payload), $this->getTag($payload));
+        $targetDirectory = sprintf('%s/%s/%s', $this->getApplication()->getAppBase(), $this->getFullName($payload), $this->getTag($payload));
         $this->prepareDir($targetDirectory);
         return $targetDirectory;
     }
