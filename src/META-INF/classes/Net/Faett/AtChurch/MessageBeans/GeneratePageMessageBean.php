@@ -21,9 +21,7 @@
 
 namespace Net\Faett\AtChurch\MessageBeans;
 
-use GitWrapper\GitWrapper;
 use AppserverIo\Psr\Pms\Message;
-use AppserverIo\Messaging\AbstractMessageListener;
 
 /**
  * Clones GIT repository, checkout the gh-pages branch and starts to generate the page.
@@ -37,7 +35,7 @@ use AppserverIo\Messaging\AbstractMessageListener;
  *
  * @MessageDriven
  */
-class GeneratePageMessageBean extends AbstractMessageListener
+class GeneratePageMessageBean extends AbstractRepositoryMessageBean
 {
 
     /**
@@ -53,92 +51,47 @@ class GeneratePageMessageBean extends AbstractMessageListener
     {
 
         try {
-
             // log a message that the message has successfully been received
-            $this->getApplication()->getInitialContext()->getSystemLogger()->info('Successfully received / finished message');
+            $this->getApplication()->getInitialContext()->getSystemLogger()->info('Successfully received message');
 
-            // initialize the GIT wrapper
-            $wrapper = new GitWrapper();
+            // decode the payload first
+            $payload = $this->decodePayload($message);
 
-            // load the content from the message
-            $content = json_decode($message->getMessage());
-
-            // if we've already cloned the repository
-            if (is_dir($workingCopy = '/tmp/' . $content->repository->full_name)) {
-
-                // reference the working copy
-                $git = $wrapper->workingCopy($workingCopy);
-
-            } elseif ($gitUrl = $content->repository->git_url) { // check if we've a repository URL
-
-                // clone the repo into a temporary working directory
-                $git = $wrapper->clone($gitUrl, $workingCopy);
-
-            } else { // we don't have a working copy nor can we find a repository URL
-                throw new \Exception('Can\'t find a working copy or a valid respository URL to clone');
-            }
-
-            // prepare the target directory
-            $webappDir = '/opt/appserver/webapps/' . $content->repository->full_name;
-
-            // create/clean up the target directory
-            if (is_dir($webappDir)) {
-                $this->cleanUpDir($webappDir);
-            } else {
-                mkdir($webappDir, 0755, true);
-            }
+            // prepare the target and working directory
+            $workingDirectory = $this->prepareWorkingDir($payload);
+            $targetDirectory = $this->prepareTargetDir($payload);
 
             // initialize the markdown parser
             $parsedown = new \Parsedown();
 
             // parse the markdown files and create the HTML code
             foreach (glob($workingCopy .'/*.md') as $sourceFilename) {
-                $targetFilename = $webappDir . '/' . strtolower(basename($sourceFilename, 'md')) . 'html';
+                $targetFilename = $targetDirectory . '/' . strtolower(basename($sourceFilename, 'md')) . 'html';
                 file_put_contents($targetFilename, $parsedown->text(file_get_contents($sourceFilename)));
             }
 
             // update the message monitor for this message
             $this->updateMonitor($message);
 
-        }  catch (\Exception $e) { // if we've a problem, log an exception
+        // if we've a problem, log an exception
+        }  catch (\Exception $e) {
             $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
     }
 
     /**
-     * Deletes all files and subdirectories from the passed directory.
+     * Prepares the target directory where we want to store the generated
+     * HTML pages later.
      *
-     * @param string $dir             The directory to remove
-     * @param bool   $alsoRemoveFiles The flag for removing files also
+     * @param \stdClass $payload The payload
      *
-     * @return void
+     * @return string The absolute path to the target directory
+     * @throws \Exception Is thrown if the target directory can't be prepared
      */
-    public function cleanUpDir($dir, $alsoRemoveFiles = true)
+    protected function prepareTargetDir(\stdClass $payload)
     {
-
-        // first check if the directory exists, if not return immediately
-        if (is_dir($dir) === false) {
-            return;
-        }
-
-        // remove old archive from webapps folder recursively
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($dir),
-            \RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $file) {
-            // skip . and .. dirs
-            if ($file->getFilename() === '.' || $file->getFilename() === '..') {
-                continue;
-            }
-            if ($file->isDir()) {
-                @rmdir($file->getRealPath());
-            } elseif ($file->isFile() && $alsoRemoveFiles) {
-                unlink($file->getRealPath());
-            } else {
-                // do nothing, because file should NOT be deleted obviously
-            }
-        }
+        $targetDirectory = sprintf('/opt/appserver/webapps/%s', $this->getFullName($payload));
+        $this->prepareDir($targetDirectory);
+        return $targetDirectory;
     }
 }
