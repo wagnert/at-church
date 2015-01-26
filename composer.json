@@ -5,20 +5,16 @@
 	"require" : {
 		"components/jquery" : "*",
 		"lusitanian/oauth" : "~0.3",
-		"erusev/parsedown" : "1.1.*",
+		"monolog/monolog" : "1.12.*",
 		"components/font-awesome" : "*",
-		"components/bootstrap" : "3.1.1",
 		"cpliakas/git-wrapper" : "1.4.*",
-		"phpdocumentor/phpdocumentor" : "2.8.*",
+		"components/bootstrap" : "3.1.1",
+        "phpdocumentor/phpdocumentor" : "2.8.1",
 		"appserver-io/routlt" : "dev-annotations"
 	},
 	"require-dev" : {
 		"appserver-io/phar" : "0.1.*",
-		"appserver-io/http" : "0.2.*",
-		"appserver-io/build" : "0.2.*",
-		"appserver-io/server" : "0.2.*",
-		"appserver-io/messaging" : "0.3.*",
-		"appserver-io-psr/servlet" : "0.7.*"
+		"appserver-io/build" : "0.1.*"
 	},
 	"config" : {
 		"vendor-dir" : "src/vendor",
@@ -42,7 +38,7 @@
 	],
 	"repositories" : [{
 			"type" : "git",
-			"url" : "/Users/wagnert/Documents/Workspace/appserver/master/routlt",
+			"url" : "git://127.0.0.1/routlt",
 			"name" : "appserver-io/routlt"
 		}
 	]
