@@ -51,7 +51,7 @@ abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
     /**
      * Decodes the payload and returns the \stdClass instance.
      *
-     * @param \AppserverIo\Psr\MessageQueueProtocol\Message $message A message containing the payload
+     * @param \AppserverIo\Psr\Pms\Message $message A message containing the payload
      *
      * @return \stdClass The decoded message
      */
@@ -65,7 +65,7 @@ abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
      *
      * @param \stdClass $payload The payload
      *
-     * @return The tag
+     * @return string The tag
      * @throws \Exception Is thrown if the payload doesn't define a tag
      */
     protected function getTag(\stdClass $payload)
@@ -86,7 +86,7 @@ abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
      *
      * @param \stdClass $payload The payload
      *
-     * @return The repositories full name
+     * @return string The repositories full name
      * @throws \Exception Is thrown if the payload doesn't define a tag
      */
     protected function getFullName(\stdClass $payload)
