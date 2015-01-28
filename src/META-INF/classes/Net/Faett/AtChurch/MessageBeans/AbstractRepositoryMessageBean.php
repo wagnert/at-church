@@ -11,29 +11,23 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\MessageBeans;
 
 use GitWrapper\GitWrapper;
-use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Messaging\AbstractMessageListener;
 
 /**
  * Clones GIT repository and starts to generate the API documentation.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
 {
@@ -51,11 +45,11 @@ abstract class AbstractRepositoryMessageBean extends AbstractMessageListener
     /**
      * Decodes the payload and returns the \stdClass instance.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message A message containing the payload
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message A message containing the payload
      *
      * @return \stdClass The decoded message
      */
-    protected function decodePayload(Message $message)
+    protected function decodePayload(MessageInterface $message)
     {
         return json_decode($message->getMessage());
     }

@@ -11,36 +11,30 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\Actions;
 
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
-use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Http\HttpProtocol;
 use OAuth\ServiceFactory;
 use OAuth\OAuth2\Service\GitHub;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Http\Uri\UriFactory;
+use AppserverIo\Http\HttpProtocol;
 use Net\Faett\AtChurch\Util\RequestKeys;
 use Net\Faett\AtChurch\OAuth\Common\Storage\Session;
+use AppserverIo\Server\Dictionaries\ServerVars;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * Default action implementation.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  *
  * @Path(name="/index")
  */
@@ -64,18 +58,17 @@ class IndexAction extends AbstractAction
     /**
      * Default action to invoke if no action parameter has been found in the request.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      *
      * @Action(name="/index")
      */
-    public function indexAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function indexAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         try {
-
             // load the github service
             $gitHub = $this->getGithubService();
 
@@ -84,7 +77,6 @@ class IndexAction extends AbstractAction
             $servletResponse->appendBodyStream('The first email on your github account is ' . $result[0]);
 
         } catch (\Exception $e) {
-
             // log the exception
             $servletRequest->getContext()->getInitialContext()->getSystemLogger()->error($e->__toString());
 
@@ -97,22 +89,21 @@ class IndexAction extends AbstractAction
     /**
      * This is the action that invokes the Github login.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      *
      * @Action(name="/login")
      */
-    public function loginAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function loginAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
         try {
-
             // redirect the the Github authorization URL
             $servletResponse->redirect($this->getGithubService()->getAuthorizationUri()->__toString());
 
-        }  catch (\Exception $e) { // if we've a problem, try to re-login
-
+        // if we've a problem, try to re-login
+        } catch (\Exception $e) {
             // log the exception
             $servletRequest->getContext()->getInitialContext()->getSystemLogger()->error($e->__toString());
 
@@ -125,18 +116,17 @@ class IndexAction extends AbstractAction
     /**
      * This is a callback action invoked by Github after successfull login.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      *
      * @Action(name="/callback")
      */
-    public function callbackAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function callbackAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         try {
-
             // query if we've a Github callback code
             if ($servletRequest->hasParameter(RequestKeys::CODE) === false) {
                 throw new \Exception(sprintf('Missing "%s" parameter in Github callback', RequestKeys::CODE));
@@ -146,8 +136,8 @@ class IndexAction extends AbstractAction
             $this->getGithubService()->requestAccessToken($servletRequest->getParameter(RequestKeys::CODE));
             $this->indexAction($servletRequest, $servletResponse);
 
-        }  catch (\Exception $e) { // if we've a problem, try to re-login
-
+        // if we've a problem, try to re-login
+        } catch (\Exception $e) {
             // log the exception
             $servletRequest->getContext()->getInitialContext()->getSystemLogger()->error($e->__toString());
 

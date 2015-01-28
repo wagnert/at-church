@@ -11,12 +11,9 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\Actions;
@@ -24,18 +21,15 @@ namespace Net\Faett\AtChurch\Actions;
 use Net\Faett\AtChurch\Util\RequestKeys;
 use AppserverIo\Messaging\StringMessage;
 use AppserverIo\Server\Dictionaries\ServerVars;
-use AppserverIo\Psr\Servlet\Http\HttpServletRequest;
-use AppserverIo\Psr\Servlet\Http\HttpServletResponse;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
+use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
 /**
  * Default action implementation.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  *
  * @Path(name="/repository")
  */
@@ -75,14 +69,14 @@ class RepositoryAction extends AbstractAction
      *
      * All other events will be ignored actually!
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      *
      * @Action(name="/callback")
      */
-    public function callbackAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function callbackAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // load the content sent by the POST request
@@ -117,14 +111,14 @@ class RepositoryAction extends AbstractAction
      * This is a dummy action that prepares the request with dummy data and invokes the
      * callback action.
      *
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest  $servletRequest  The request instance
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponse $servletResponse The response instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
      *
      * @Action(name="/dummy")
      */
-    public function dummyAction(HttpServletRequest $servletRequest, HttpServletResponse $servletResponse)
+    public function dummyAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
 
         // prepare the path to the application

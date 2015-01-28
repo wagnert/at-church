@@ -11,12 +11,9 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\Util;
@@ -24,12 +21,9 @@ namespace Net\Faett\AtChurch\Util;
 /**
  * Utility class containing the request keys.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 class RequestKeys
 {

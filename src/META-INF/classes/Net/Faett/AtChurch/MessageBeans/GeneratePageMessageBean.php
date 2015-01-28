@@ -11,27 +11,21 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\MessageBeans;
 
-use AppserverIo\Psr\Pms\Message;
+use AppserverIo\Psr\Pms\MessageInterface;
 
 /**
  * Clones GIT repository, checkout the gh-pages branch and starts to generate the page.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  *
  * @MessageDriven
  */
@@ -41,13 +35,13 @@ class GeneratePageMessageBean extends AbstractRepositoryMessageBean
     /**
      * Will be invoked when a new message for this message bean will be available.
      *
-     * @param \AppserverIo\Psr\Pms\Message $message   A message this message bean is listen for
-     * @param string                       $sessionId The session ID
+     * @param \AppserverIo\Psr\Pms\MessageInterface $message   A message this message bean is listen for
+     * @param string                                $sessionId The session ID
      *
      * @return void
-     * @see \AppserverIo\Psr\Pms\MessageListener::onMessage()
+     * @see \AppserverIo\Psr\Pms\MessageListenerInterface::onMessage()
      */
-    public function onMessage(Message $message, $sessionId)
+    public function onMessage(MessageInterface $message, $sessionId)
     {
 
         try {
@@ -74,7 +68,7 @@ class GeneratePageMessageBean extends AbstractRepositoryMessageBean
             $this->updateMonitor($message);
 
         // if we've a problem, log an exception
-        }  catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->getApplication()->getInitialContext()->getSystemLogger()->error($e->__toString());
         }
     }

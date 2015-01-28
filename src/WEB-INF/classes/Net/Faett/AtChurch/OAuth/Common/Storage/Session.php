@@ -11,12 +11,9 @@
  *
  * PHP version 5
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 
 namespace Net\Faett\AtChurch\OAuth\Common\Storage;
@@ -25,42 +22,48 @@ use OAuth\Common\Token\TokenInterface;
 use OAuth\Common\Storage\TokenStorageInterface;
 use OAuth\Common\Storage\Exception\TokenNotFoundException;
 use OAuth\Common\Storage\Exception\AuthorizationStateNotFoundException;
+use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 
 /**
  * Stores a token in the application servers session.
  *
- * @category   Net
- * @package    Faett
- * @subpackage AtChurch
- * @author     Tim Wagner <wagner_tim78@hotmail.com>
- * @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link       https://github.com/faett-net/at-church
+ * @author  Tim Wagner <wagner_tim78@hotmail.com>
+ * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+ * @link    https://github.com/faett-net/at-church
  */
 class Session implements TokenStorageInterface
 {
     /**
-     * @var bool
+     * Flag that the session has been started.
+     *
+     * @var boolean
      */
     protected $startSession;
 
     /**
+     * Session variable name.
+     *
      * @var string
      */
     protected $sessionVariableName;
 
     /**
+     * Session state varialbe name.
+     *
      * @var string
      */
     protected $stateVariableName;
 
     /**
-     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequest $serlvetRequest The servlet request
-     * @param bool $startSession Whether or not to start the session upon construction.
-     * @param string $sessionVariableName the variable name to use within the _SESSION superglobal
-     * @param string $stateVariableName
+     * Initializes the session wrapper.
+     *
+     * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface $servletRequest      The servlet request
+     * @param boolean                                                   $startSession        Whether or not to start the session upon construction.
+     * @param string                                                    $sessionVariableName The variable name to use within the session
+     * @param string                                                    $stateVariableName   The state variable name to use within the session
      */
     public function __construct(
-        $servletRequest,
+        HttpServletRequestInterface $servletRequest,
         $startSession = true,
         $sessionVariableName = 'lusitanian_oauth_token',
         $stateVariableName = 'lusitanian_oauth_state'
@@ -89,7 +92,23 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Default destrcutor implementation.
+     */
+    public function __destruct()
+    {
+        if ($this->startSession) {
+            // save session here
+        }
+    }
+
+    /**
+     * Returns the OAuth access token for the passed service.
+     *
+     * @param string $service The requested service
+     *
+     * @return string Thes OAuth access token stored in the session
+     * @throws \OAuth\Common\Storage\Exception\TokenNotFoundException Is thrown if the requested token is not available
+     * @see \OAuth\Common\Storage\TokenStorageInterface::retrieveAccessToken()
      */
     public function retrieveAccessToken($service)
     {
@@ -101,7 +120,13 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Stores the OAuth access token in the session.
+     *
+     * @param string                            $service The requested service
+     * @param OAuth\Common\Token\TokenInterface $token   The OAuth access token to store
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::storeAccessToken()
      */
     public function storeAccessToken($service, TokenInterface $token)
     {
@@ -116,7 +141,12 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Queries whether an access token for the service is available.
+     *
+     * @param string $service The requested service
+     *
+     * @return boolean TRUE if the access token is available, else FALSE
+     * @see \OAuth\Common\Storage\TokenStorageInterface::hasAccessToken()
      */
     public function hasAccessToken($service)
     {
@@ -127,7 +157,12 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Deletes the OAuth access token for the passed service from the session.
+     *
+     * @param string $service The requested service
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::clearToken()
      */
     public function clearToken($service)
     {
@@ -139,7 +174,10 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Deletes all OAuth access tokens from the session.
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::clearAllTokens()
      */
     public function clearAllTokens()
     {
@@ -148,7 +186,13 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Stores the state for the passed service in the session.
+     *
+     * @param string $service The requested service
+     * @param string $state   The state to be stored
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::storeAuthorizationState()
      */
     public function storeAuthorizationState($service, $state)
     {
@@ -162,7 +206,12 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Queries whether the passed service has an authorization state in the session.
+     *
+     * @param string $service The requested service
+     *
+     * @return boolean TRUE if the authorization state is available, else FALSE
+     * @see \OAuth\Common\Storage\TokenStorageInterface::hasAuthorizationState()
      */
     public function hasAuthorizationState($service)
     {
@@ -173,7 +222,13 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the authorization state of the passed service from the session.
+     *
+     * @param string $service The requested service
+     *
+     * @return string The authorization state for the passed service
+     * @throws \OAuth\Common\Storage\Exception\AuthorizationStateNotFoundException Is thrown if the state is not available in the session
+     * @see \OAuth\Common\Storage\TokenStorageInterface::retrieveAuthorizationState()
      */
     public function retrieveAuthorizationState($service)
     {
@@ -185,7 +240,12 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Removes the authorization state for the passed service from the session.
+     *
+     * @param string $service The service to remove the authorization state for
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::clearAuthorizationState()
      */
     public function clearAuthorizationState($service)
     {
@@ -197,21 +257,14 @@ class Session implements TokenStorageInterface
     }
 
     /**
-     * {@inheritDoc}
+     * Removes all authorization states from the session.
+     *
+     * @return Net\Faett\AtChurch\OAuth\Common\Storage\Session The instance itself
+     * @see \OAuth\Common\Storage\TokenStorageInterface::clearAllAuthorizationStates()
      */
     public function clearAllAuthorizationStates()
     {
         $this->session->putData($this->stateVariableName, null);
         return $this;
-    }
-
-    /**
-     * Default destrcutor implementation.
-     */
-    public function __destruct()
-    {
-        if ($this->startSession) {
-            // save session here
-        }
     }
 }
