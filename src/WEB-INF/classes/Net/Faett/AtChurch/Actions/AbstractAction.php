@@ -20,7 +20,7 @@ namespace Net\Faett\AtChurch\Actions;
 
 use AppserverIo\Routlt\DispatchAction;
 use AppserverIo\Routlt\Util\ServletContextAware;
-use AppserverIo\Psr\Servlet\ServletContext;
+use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
