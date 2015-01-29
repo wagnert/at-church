@@ -56,6 +56,14 @@ class IndexAction extends AbstractAction
     const GITHUB_CLIENT_SECRET = 'github.client.secret';
 
     /**
+     * The SFSB to implement authorized access to resources.
+     *
+     * @var Net\Faett\AtChurch\SessionBeans\ProfileSessionBean
+     * @EnterpriseBean(name="ProfileSessionBean")
+     */
+    protected $profileSessionBean;
+
+    /**
      * Default action to invoke if no action parameter has been found in the request.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
@@ -99,8 +107,15 @@ class IndexAction extends AbstractAction
     public function loginAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
         try {
+            // load the github service
+            $gitHub = $this->getGithubService();
+
             // redirect the the Github authorization URL
-            $servletResponse->redirect($this->getGithubService()->getAuthorizationUri()->__toString());
+            $servletResponse->redirect($gitHub->getAuthorizationUri()->__toString());
+
+            // login use the SFSB
+            $this->profileSessionBean->login(json_decode($gitHub->request('user')));
+            $this->profileSessionBean->protectedMethod();
 
         // if we've a problem, try to re-login
         } catch (\Exception $e) {
