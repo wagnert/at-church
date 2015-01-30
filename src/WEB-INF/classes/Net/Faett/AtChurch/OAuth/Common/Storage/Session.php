@@ -106,7 +106,7 @@ class Session implements TokenStorageInterface
      *
      * @param string $service The requested service
      *
-     * @return string Thes OAuth access token stored in the session
+     * @return \OAuth\Common\Token\TokenInterface Thes OAuth access token stored in the session
      * @throws \OAuth\Common\Storage\Exception\TokenNotFoundException Is thrown if the requested token is not available
      * @see \OAuth\Common\Storage\TokenStorageInterface::retrieveAccessToken()
      */

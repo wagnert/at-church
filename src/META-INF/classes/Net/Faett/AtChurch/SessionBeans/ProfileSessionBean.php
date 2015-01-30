@@ -97,7 +97,7 @@ class ProfileSessionBean
     /**
      * Returns the user logged into the system.
      *
-     * @return \string The user logged into the system
+     * @return \stdClass The user logged into the system
      */
     public function getUser()
     {
@@ -109,7 +109,7 @@ class ProfileSessionBean
      * the users method call by invoking the authorize() method of our interceptor.
      *
      * @return void
-     * @Around("advise(AuthorizationInterceptor->authorize())")
+     * @Before("advise(AuthorizationInterceptor->authorize())")
      */
     public function protectedMethod()
     {

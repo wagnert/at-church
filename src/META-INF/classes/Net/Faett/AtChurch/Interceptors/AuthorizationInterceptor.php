@@ -63,6 +63,6 @@ class AuthorizationInterceptor
             ->getApplication()
             ->getInitialContext()
             ->getSystemLogger()
-            ->info(sprintf('The method %s::%s is about to be called by user %s', className, methodName, $user->login));
+            ->info(sprintf('The method %s::%s is about to be called by user %s', $className, $methodName, $user->login));
     }
 }
