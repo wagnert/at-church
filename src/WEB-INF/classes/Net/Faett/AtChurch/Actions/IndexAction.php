@@ -59,7 +59,7 @@ class IndexAction extends AbstractAction
      * The SFSB to implement authorized access to resources.
      *
      * @var Net\Faett\AtChurch\SessionBeans\ProfileSessionBean
-     * @EnterpriseBean(name="ProfileSessionBean")
+     * @EnterpriseBean
      */
     protected $profileSessionBean;
 
@@ -114,8 +114,8 @@ class IndexAction extends AbstractAction
             $servletResponse->redirect($gitHub->getAuthorizationUri()->__toString());
 
             // login use the SFSB
-            $this->profileSessionBean->login(json_decode($gitHub->request('user')));
-            $this->profileSessionBean->protectedMethod();
+            // $this->profileSessionBean->login(json_decode($gitHub->request('user')));
+            // $this->profileSessionBean->protectedMethod();
 
         // if we've a problem, try to re-login
         } catch (\Exception $e) {

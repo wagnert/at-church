@@ -18,7 +18,7 @@
 
 namespace Net\Faett\AtChurch\Interceptors;
 
-use AppserverIo\Doppelgaenger\Entities\MethodInvocation;
+use AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface;
 
 /**
  * Interceptor to catch method invocations on proctected methods.
@@ -35,7 +35,7 @@ class AuthorizationInterceptor
     /**
      * Advice used to check user authorization on method call.
      *
-     * @param \AppserverIo\Doppelgaenger\Entities\MethodInvocation $methodInvocation Initially invoked method
+     * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation Initially invoked method
      *
      * @return void
      */

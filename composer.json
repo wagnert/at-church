@@ -13,8 +13,9 @@
 		"appserver-io/routlt" : "dev-annotations"
 	},
 	"require-dev" : {
-		"appserver-io/phar" : "0.1.*",
-		"appserver-io/build" : "0.2.*"
+		"appserver-io/phar" : "~1.0",
+		"appserver-io/build" : "~1.0",
+		"appserver-io-psr/servlet" : "~1.0"
 	},
 	"config" : {
 		"vendor-dir" : "src/vendor",
