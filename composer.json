@@ -1,6 +1,6 @@
 {
 	"name" : "faett-net/at-church",
-	"description" : "The example application for the ApplicationServer",
+	"description" : "The example application for appserver.io",
 	"version" : "0.1.0",
 	"require" : {
 		"components/jquery" : "*",
@@ -10,12 +10,11 @@
 		"cpliakas/git-wrapper" : "1.4.*",
 		"components/bootstrap" : "3.1.1",
 		"phpdocumentor/phpdocumentor" : "2.8.1",
-		"appserver-io/routlt" : "dev-annotations"
+		"appserver-io/routlt" : "2.0.0-alpha1"
 	},
 	"require-dev" : {
 		"appserver-io/phar" : "~1.0",
-		"appserver-io/build" : "~1.0",
-		"appserver-io-psr/servlet" : "~1.0"
+		"appserver-io/build" : "~1.0"
 	},
 	"config" : {
 		"vendor-dir" : "src/vendor",
@@ -35,12 +34,6 @@
 	"authors" : [{
 			"name" : "Tim Wagner",
 			"email" : "wagner_tim78@hotmail.com"
-		}
-	],
-	"repositories" : [{
-			"type" : "git",
-			"url" : "git://127.0.0.1/routlt",
-			"name" : "appserver-io/routlt"
 		}
 	]
 }
