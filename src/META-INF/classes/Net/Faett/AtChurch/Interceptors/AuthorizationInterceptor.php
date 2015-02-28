@@ -18,7 +18,7 @@
 
 namespace Net\Faett\AtChurch\Interceptors;
 
-use AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface;
+use AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface;
 
 /**
  * Interceptor to catch method invocations on proctected methods.
@@ -35,11 +35,11 @@ class AuthorizationInterceptor
     /**
      * Advice used to check user authorization on method call.
      *
-     * @param \AppserverIo\Doppelgaenger\Interfaces\MethodInvocationInterface $methodInvocation Initially invoked method
+     * @param \AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface $methodInvocation Initially invoked method
      *
      * @return void
      */
-    public function authorize(MethodInvocation $methodInvocation)
+    public function authorize(MethodInvocationInterface $methodInvocation)
     {
 
         // load class and method name
