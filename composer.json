@@ -11,7 +11,7 @@
 		"components/bootstrap" : "3.1.1",
 		"phpdocumentor/phpdocumentor" : "2.8.1",
 		"respect/validation" : "0.8.*",
-		"appserver-io/routlt" : "2.0.0-alpha1"
+		"appserver-io/routlt" : "2.0.0-alpha2"
 	},
 	"require-dev" : {
 		"appserver-io/phar" : "~1.0",
