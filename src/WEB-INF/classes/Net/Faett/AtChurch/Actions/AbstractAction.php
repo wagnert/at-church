@@ -152,31 +152,6 @@ abstract class AbstractAction extends DispatchAction implements ServletContextAw
     }
 
     /**
-     * Attaches the passed data under the also passed key in the servlet context.
-     *
-     * @param string $key   The key to attach the data under
-     * @param mixed  $value The data to be attached
-     *
-     * @return void
-     */
-    public function setAttribute($key, $value)
-    {
-        $this->context->setAttribute($key, $value);
-    }
-
-    /**
-     * Returns the data for the passed key.
-     *
-     * @param string $key The key to return the data for
-     *
-     * @return mixed The requested data
-     */
-    public function getAttribute($key)
-    {
-        return $this->context->getAttribute($key);
-    }
-
-    /**
      * Returns base URL for the html base tag.
      *
      * @return string The base URL depending on the vhost
