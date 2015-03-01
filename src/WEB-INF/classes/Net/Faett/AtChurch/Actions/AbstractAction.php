@@ -158,13 +158,6 @@ abstract class AbstractAction extends DispatchAction implements ServletContextAw
      */
     public function getBaseUrl()
     {
-
-        // if we ARE in a virtual host, return the base URL
-        if ($this->getServletRequest()->getContext()->isVhostOf($this->getServletRequest()->getServerName())) {
-            return AbstractAction::BASE_URL;
-        }
-
-        // if not, prepend it with the context path
-        return $this->getServletRequest()->getContextPath() . AbstractAction::BASE_URL;
+        return $this->getServletRequest()->getBaseModifier();
     }
 }
