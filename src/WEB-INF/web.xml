@@ -16,7 +16,7 @@
         <servlet-class>AppserverIo\Routlt\ControllerServlet</servlet-class>
         <init-param>
             <param-name>action.base.path</param-name>
-            <param-value>WEB-INF/classes</param-value>
+            <param-value>/Net/Faett/AtChurch/Actions</param-value>
         </init-param>
         <init-param>
             <param-name>routlt.configuration.file</param-name>
