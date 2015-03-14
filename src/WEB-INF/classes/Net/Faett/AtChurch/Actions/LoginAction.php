@@ -30,7 +30,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  *
  * @Path(name="/login")
  */
-class LoginAction extends AbstractAction
+class LoginAction extends XhrAbstractAction
 {
 
     /**
@@ -48,7 +48,10 @@ class LoginAction extends AbstractAction
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
      * @return void
+     *
      * @Action(name="/index")
+     * @Ensures("is_string(filter_var($this->getAttribute('username'), FILTER_VALIDATE_EMAIL))")
+     * @Ensures("is_string(filter_var($this->getAttribute('password'), FILTER_SANITIZE_STRING))")
      */
     public function indexAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {

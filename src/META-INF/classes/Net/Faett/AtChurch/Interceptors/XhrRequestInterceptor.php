@@ -19,6 +19,7 @@
 namespace Net\Faett\AtChurch\Interceptors;
 
 use AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface;
+use AppserverIo\Psr\MetaobjectProtocol\Dbc\ContractExceptionInterface;
 
 /**
  * Interceptor to catch action invocations.
@@ -26,6 +27,7 @@ use AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface;
  * @author Tim Wagner <wagner_tim78@hotmail.com>
  * @license http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link https://github.com/faett-net/at-church
+ *
  * @Aspect
  */
 class XhrRequestInterceptor
@@ -35,9 +37,51 @@ class XhrRequestInterceptor
      * This is a dummy method needed to specify a pointcut.
      *
      * @return void
+     *
+     * @Pointcut("call(\Net\Faett\AtChurch\Actions\XhrAbstractAction->perform())")
+     */
+    public function thePerformMethod() {}
+
+    /**
+     * This is a dummy method needed to specify a pointcut.
+     *
+     * @return void
+     *
      * @Pointcut("call(\Net\Faett\AtChurch\Actions\LoginAction->*Action())")
      */
-    public function allIndexActionMethods() {}
+    public function allActionMethods() {}
+
+    /**
+     * @Around("pointcut(thePerformMethod())")
+     */
+    public function handlePerformMethod(MethodInvocationInterface $methodInvocation)
+    {
+
+        try {
+            // get servlet method params to local refs
+            $parameters = $methodInvocation->getParameters();
+            $servletRequest = $parameters['servletRequest'];
+            $servletResponse = $parameters['servletResponse'];
+
+            // proceed invocation chain
+            $responseJsonObject = $methodInvocation->proceed();
+
+        } catch (ContractExceptionInterface $cei) {
+
+            // set the status code
+            $servletResponse->setStatusCode(
+                $cei->getCode() ? $cei->getCode() : 400
+            );
+
+            // create error JSON response object
+            $responseJsonObject = new \stdClass();
+            $responseJsonObject->error = new \stdClass();
+            $responseJsonObject->error->message = nl2br($cei->getMessage());
+        }
+
+        // add json encoded string to response body stream
+        $servletResponse->appendBodyStream(json_encode($responseJsonObject));
+    }
 
     /**
      * Advice that handles a XHR Request.
@@ -45,7 +89,8 @@ class XhrRequestInterceptor
      * @param AppserverIo\Psr\MetaobjectProtocol\Aop\MethodInvocationInterface $methodInvocation Initially invoked method
      *
      * @return void
-     * @Around("pointcut(allIndexActionMethods())")
+     *
+     * @Around("pointcut(allActionMethods())")
      */
     public function handleRequest(MethodInvocationInterface $methodInvocation)
     {

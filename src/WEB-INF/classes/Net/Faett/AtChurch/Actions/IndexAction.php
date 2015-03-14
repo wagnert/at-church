@@ -23,6 +23,7 @@ use OAuth\OAuth2\Service\GitHub;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Http\Uri\UriFactory;
 use AppserverIo\Http\HttpProtocol;
+use AppserverIo\Routlt\Util\ValidationAware;
 use Net\Faett\AtChurch\Util\RequestKeys;
 use Net\Faett\AtChurch\OAuth\Common\Storage\Session;
 use AppserverIo\Server\Dictionaries\ServerVars;
@@ -38,7 +39,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  *
  * @Path(name="/index")
  */
-class IndexAction extends AbstractAction
+class IndexAction extends AbstractAction implements ValidationAware
 {
 
     /**
@@ -62,6 +63,23 @@ class IndexAction extends AbstractAction
      * @EnterpriseBean
      */
     protected $profileSessionBean;
+
+    protected $test;
+
+    public function setTest($test)
+    {
+        $this->test = $test;
+    }
+
+    public function getTest()
+    {
+        return $this->test;
+    }
+
+    public function validate()
+    {
+        error_log("Found test " . $this->getTest());
+    }
 
     /**
      * Default action to invoke if no action parameter has been found in the request.

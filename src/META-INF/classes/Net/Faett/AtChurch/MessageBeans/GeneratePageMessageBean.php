@@ -59,7 +59,7 @@ class GeneratePageMessageBean extends AbstractRepositoryMessageBean
             $parsedown = new \Parsedown();
 
             // parse the markdown files and create the HTML code
-            foreach (glob($workingCopy .'/*.md') as $sourceFilename) {
+            foreach (glob($workingDirectory .'/*.md') as $sourceFilename) {
                 $targetFilename = $targetDirectory . '/' . strtolower(basename($sourceFilename, 'md')) . 'html';
                 file_put_contents($targetFilename, $parsedown->text(file_get_contents($sourceFilename)));
             }
