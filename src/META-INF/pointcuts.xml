@@ -7,7 +7,7 @@
     </pointcut>
 
     <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ParamsInterceptor</advice-aspect>
+        <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
         <advice-type>Before</advice-type>
         <advice-pointcuts>
@@ -25,7 +25,7 @@
     </advice>
 
     <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
+        <advice-aspect>\AppserverIo\Routlt\Interceptors\ParamsInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
         <advice-type>Before</advice-type>
         <advice-pointcuts>
