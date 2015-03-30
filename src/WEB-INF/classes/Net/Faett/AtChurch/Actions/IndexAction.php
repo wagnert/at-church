@@ -39,7 +39,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  *
  * @Path(name="/index")
  */
-class IndexAction extends AbstractAction implements ValidationAware
+class IndexAction extends AbstractAction
 {
 
     /**
@@ -63,23 +63,6 @@ class IndexAction extends AbstractAction implements ValidationAware
      * @EnterpriseBean
      */
     protected $profileSessionBean;
-
-    protected $test;
-
-    public function setTest($test)
-    {
-        $this->test = $test;
-    }
-
-    public function getTest()
-    {
-        return $this->test;
-    }
-
-    public function validate()
-    {
-        error_log("Found test " . $this->getTest());
-    }
 
     /**
      * Default action to invoke if no action parameter has been found in the request.

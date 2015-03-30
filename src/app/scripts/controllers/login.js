@@ -19,6 +19,7 @@ angular.module('srcApp')
         $scope.setCurrentUsername(username);
         $location.path('/');
       }, function (response) {
+    	  console.log(response);
         $scope.setErrorMessage(response.data.error.message);
       });
     };

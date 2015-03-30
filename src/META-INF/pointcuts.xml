@@ -7,9 +7,9 @@
     </pointcut>
 
     <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
+        <advice-aspect>\AppserverIo\Routlt\Interceptors\ParamsInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
-        <advice-type>Before</advice-type>
+        <advice-type>Around</advice-type>
         <advice-pointcuts>
             <pointcut-name>allActions</pointcut-name>
         </advice-pointcuts>
@@ -18,16 +18,27 @@
     <advice>
         <advice-aspect>\AppserverIo\Routlt\Interceptors\XhrParamsInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
-        <advice-type>Before</advice-type>
+        <advice-type>Around</advice-type>
         <advice-pointcuts>
             <pointcut-name>allActions</pointcut-name>
         </advice-pointcuts>
     </advice>
 
+    <!--
     <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ParamsInterceptor</advice-aspect>
+        <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
-        <advice-type>Before</advice-type>
+        <advice-type>Around</advice-type>
+        <advice-pointcuts>
+            <pointcut-name>allActions</pointcut-name>
+        </advice-pointcuts>
+    </advice>
+    -->
+    
+    <advice>
+        <advice-aspect>\AppserverIo\Routlt\Interceptors\WorkflowInterceptor</advice-aspect>
+        <advice-name>intercept</advice-name>
+        <advice-type>Around</advice-type>
         <advice-pointcuts>
             <pointcut-name>allActions</pointcut-name>
         </advice-pointcuts>

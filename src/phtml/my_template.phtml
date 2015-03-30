@@ -1,0 +1,7 @@
+<?php
+
+use AppserverIo\Http\HttpProtocol;
+
+$servletResponse->addHeader(HttpProtocol::HEADER_CONTENT_TYPE, 'application/json');
+
+echo json_encode($servletRequest->getAttribute('responseData'));

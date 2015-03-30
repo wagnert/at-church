@@ -18,6 +18,8 @@
 
 namespace Net\Faett\AtChurch\Actions;
 
+use Respect\Validation\Validator as v;
+use AppserverIo\Routlt\Util\ValidationAware;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
 
@@ -30,7 +32,7 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  *
  * @Path(name="/login")
  */
-class LoginAction extends XhrAbstractAction
+class LoginAction extends AbstractAction implements ValidationAware
 {
 
     /**
@@ -41,17 +43,74 @@ class LoginAction extends XhrAbstractAction
      */
     protected $loginSessionBean;
 
+    protected $errors = array();
+
+    protected $username = '';
+
+    protected $password = '';
+
+    /**
+     * @Requires(type="RespectValidation", constraint="v::email()->setName('Username')->check($username)")
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @Requires(type="RespectValidation", constraint="v::notEmpty()->setName('Password')->check($password)")
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    public function addFieldError($fieldName, $e)
+    {
+        $this->errors[$fieldName] = $e->getMessage();
+    }
+
+    public function hasErrors()
+    {
+        return sizeof($this->errors) > 0;
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /*
+    public function validate()
+    {
+
+        $errorMessages = array();
+
+        if (filter_var($this->getUsername(), FILTER_VALIDATE_EMAIL) === false) {
+            $errorMessages['username'] = 'Username is not a valid mail address';
+        }
+    }
+    */
+
     /**
      * Default action to invoke if no action parameter has been found in the request.
      *
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
-     * @return void
+     * @return string|null The action result
      *
      * @Action(name="/index")
-     * @Ensures("is_string(filter_var($this->getAttribute('username'), FILTER_VALIDATE_EMAIL))")
-     * @Ensures("is_string(filter_var($this->getAttribute('password'), FILTER_SANITIZE_STRING))")
      */
     public function indexAction(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
@@ -63,16 +122,17 @@ class LoginAction extends XhrAbstractAction
             $session->start();
 
             // load username/attribute
-            $username = $this->getAttribute('username');
-            $password = $this->getAttribute('password');
+            $username = $this->getUsername();
+            $password = $this->getPassword();
 
             // try to login by invoking the SLSB
             $this->loginSessionBean->login($username, $password);
 
-            return array(
-                'id' => $session->getId(),
-                'username' => $username
-            );
+            // load username/attribute
+            $servletRequest->setAttribute('responseData', array('id' => $session->getId(), 'username' => $this->getUsername()));
+
+            // return the path to the PHTML template
+            return '/phtml/my_template.phtml';
 
         } catch (\Exception $e) {
             // log the exception

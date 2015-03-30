@@ -72,7 +72,7 @@ abstract class AbstractAction extends DispatchAction implements ServletContextAw
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface  $servletRequest  The request instance
      * @param \AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface $servletResponse The response instance
      *
-     * @return void
+     * @return string|null The action result
      */
     public function perform(HttpServletRequestInterface $servletRequest, HttpServletResponseInterface $servletResponse)
     {
@@ -82,7 +82,7 @@ abstract class AbstractAction extends DispatchAction implements ServletContextAw
         $this->setServletResponse($servletResponse);
 
         // call parent method
-        parent::perform($servletRequest, $servletResponse);
+        return parent::perform($servletRequest, $servletResponse);
     }
 
     /**

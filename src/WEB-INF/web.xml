@@ -24,6 +24,18 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <description>A servlet that handles PHTML files.</description>
+        <display-name>The PHTML servlet</display-name>
+        <servlet-name>phtml</servlet-name>
+        <servlet-class>Net\Faett\AtChurch\Servlets\PhtmlServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>phtml</servlet-name>
+        <url-pattern>*.phtml</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>routlt</servlet-name>
         <url-pattern>/</url-pattern>
