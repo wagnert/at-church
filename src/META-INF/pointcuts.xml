@@ -6,7 +6,6 @@
         <pointcut-pattern>call(\Net\Faett\AtChurch\Actions\*->*Action())</pointcut-pattern>
     </pointcut>
 
-    <!--
     <advice>
         <advice-aspect>\AppserverIo\Routlt\Interceptors\ParamsInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
@@ -15,7 +14,6 @@
             <pointcut-name>allActions</pointcut-name>
         </advice-pointcuts>
     </advice>
-    -->
 
     <advice>
         <advice-aspect>\AppserverIo\Routlt\Interceptors\XhrParamsInterceptor</advice-aspect>
@@ -35,6 +33,7 @@
         </advice-pointcuts>
     </advice>
 
+    <!--
     <advice>
         <advice-aspect>\AppserverIo\Routlt\Interceptors\ResultInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>
@@ -44,7 +43,6 @@
         </advice-pointcuts>
     </advice>
 
-    <!--
     <advice>
         <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
         <advice-name>intercept</advice-name>

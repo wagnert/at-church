@@ -19,6 +19,8 @@
 namespace Net\Faett\AtChurch\Actions;
 
 use Respect\Validation\Validator as v;
+use AppserverIo\Routlt\ActionInterface;
+use AppserverIo\Routlt\Results\JsonResult;
 use AppserverIo\Routlt\Util\ValidationAware;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
@@ -32,16 +34,12 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  *
  * @Path(name="/login")
  * @Results({
- *     @Result(name="success", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\ServletDispatcherResult"),
- *     @Result(name="failure", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\ServletDispatcherResult")
+ *     @Result(name="success", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\JsonResult"),
+ *     @Result(name="failure", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\JsonResult")
  * })
  */
-class LoginAction extends AbstractAction implements ValidationAware
+class LoginAction extends AbstractAction
 {
-
-    const SUCCESS = 'success';
-
-    const FAILURE = 'failure';
 
     /**
      * The session bean that handles the login functionality.
@@ -51,15 +49,26 @@ class LoginAction extends AbstractAction implements ValidationAware
      */
     protected $loginSessionBean;
 
-    protected $errors = array();
-
-    protected $results = array();
-
+    /**
+     * The username found in the request.
+     *
+     * @var string
+     */
     protected $username = '';
 
+    /**
+     * The password found in the request.
+     *
+     * @var string
+     */
     protected $password = '';
 
     /**
+     * Sets the username found in the request.
+     *
+     * @param string $username The username
+     *
+     * @return void
      * @Requires(type="RespectValidation", constraint="v::email()->setName('Username')->check($username)")
      */
     public function setUsername($username)
@@ -67,12 +76,22 @@ class LoginAction extends AbstractAction implements ValidationAware
         $this->username = $username;
     }
 
+    /**
+     * Returns the username found in the request.
+     *
+     * @return string|null The username
+     */
     public function getUsername()
     {
         return $this->username;
     }
 
     /**
+     * Sets the password found in the request.
+     *
+     * @param string $password The password
+     *
+     * @return void
      * @Requires(type="RespectValidation", constraint="v::notEmpty()->setName('Password')->check($password)")
      */
     public function setPassword($password)
@@ -80,49 +99,15 @@ class LoginAction extends AbstractAction implements ValidationAware
         $this->password = $password;
     }
 
+    /**
+     * The password found in the request.
+     *
+     * @return string|null The password
+     */
     public function getPassword()
     {
         return $this->password;
     }
-
-    public function addResult($result)
-    {
-        $this->results[$result->getName()] = $result;
-    }
-
-    public function findResult($name)
-    {
-        if (isset($this->results[$name])) {
-            return $this->results[$name];
-        }
-    }
-
-    public function addFieldError($fieldName, $e)
-    {
-        $this->errors[$fieldName] = $e->getMessage();
-    }
-
-    public function hasErrors()
-    {
-        return sizeof($this->errors) > 0;
-    }
-
-    public function getErrors()
-    {
-        return $this->errors;
-    }
-
-    /*
-    public function validate()
-    {
-
-        $errorMessages = array();
-
-        if (filter_var($this->getUsername(), FILTER_VALIDATE_EMAIL) === false) {
-            $errorMessages['username'] = 'Username is not a valid mail address';
-        }
-    }
-    */
 
     /**
      * Default action to invoke if no action parameter has been found in the request.
@@ -151,18 +136,20 @@ class LoginAction extends AbstractAction implements ValidationAware
             $this->loginSessionBean->login($username, $password);
 
             // load username/attribute
-            $servletRequest->setAttribute('responseData', array('id' => $session->getId(), 'username' => $this->getUsername()));
+            $servletRequest->setAttribute(JsonResult::DATA, array('id' => $session->getId(), 'username' => $this->getUsername()));
 
-            // return the path to the PHTML template
-            return LoginAction::SUCCESS;
+            // action invocation has been successfull
+            return ActionInterface::SUCCESS;
 
         } catch (\Exception $e) {
             // log the exception
             $servletRequest->getContext()->getInitialContext()->getSystemLogger()->error($e->__toString());
 
             // append the exception the response body
-            $servletResponse->appendBodyStream($e->__toString());
-            $servletResponse->setStatusCode(500);
+            $this->addFieldError('unknown', $e);
+
+            // action invocation has been successfull
+            return ActionInterface::FAILURE;
         }
     }
 }
