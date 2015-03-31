@@ -31,9 +31,17 @@ use AppserverIo\Psr\Servlet\Http\HttpServletResponseInterface;
  * @link    https://github.com/faett-net/at-church
  *
  * @Path(name="/login")
+ * @Results({
+ *     @Result(name="success", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\ServletDispatcherResult"),
+ *     @Result(name="failure", result="/phtml/my_template.phtml", type="AppserverIo\Routlt\Results\ServletDispatcherResult")
+ * })
  */
 class LoginAction extends AbstractAction implements ValidationAware
 {
+
+    const SUCCESS = 'success';
+
+    const FAILURE = 'failure';
 
     /**
      * The session bean that handles the login functionality.
@@ -44,6 +52,8 @@ class LoginAction extends AbstractAction implements ValidationAware
     protected $loginSessionBean;
 
     protected $errors = array();
+
+    protected $results = array();
 
     protected $username = '';
 
@@ -73,6 +83,18 @@ class LoginAction extends AbstractAction implements ValidationAware
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function addResult($result)
+    {
+        $this->results[$result->getName()] = $result;
+    }
+
+    public function findResult($name)
+    {
+        if (isset($this->results[$name])) {
+            return $this->results[$name];
+        }
     }
 
     public function addFieldError($fieldName, $e)
@@ -132,7 +154,7 @@ class LoginAction extends AbstractAction implements ValidationAware
             $servletRequest->setAttribute('responseData', array('id' => $session->getId(), 'username' => $this->getUsername()));
 
             // return the path to the PHTML template
-            return '/phtml/my_template.phtml';
+            return LoginAction::SUCCESS;
 
         } catch (\Exception $e) {
             // log the exception

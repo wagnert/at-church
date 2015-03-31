@@ -17,6 +17,7 @@
                 <directory enforced="true">/common/classes</directory>
                 <directory enforced="true">/WEB-INF/classes</directory>
                 <directory enforced="true">/META-INF/classes</directory>
+                <!-- directory enforced="true">/vendor/appserver-io/routlt</directory -->
             </directories>
         </classLoader>
     </classLoaders>
