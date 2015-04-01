@@ -33,23 +33,4 @@
         </advice-pointcuts>
     </advice>
 
-    <!--
-    <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ResultInterceptor</advice-aspect>
-        <advice-name>intercept</advice-name>
-        <advice-type>Around</advice-type>
-        <advice-pointcuts>
-            <pointcut-name>allActions</pointcut-name>
-        </advice-pointcuts>
-    </advice>
-
-    <advice>
-        <advice-aspect>\AppserverIo\Routlt\Interceptors\ValidationInterceptor</advice-aspect>
-        <advice-name>intercept</advice-name>
-        <advice-type>Around</advice-type>
-        <advice-pointcuts>
-            <pointcut-name>allActions</pointcut-name>
-        </advice-pointcuts>
-    </advice>
-    -->
 </pointcuts>
